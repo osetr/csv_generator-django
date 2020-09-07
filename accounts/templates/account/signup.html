@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+  <h2>Get Account</h2>
+  <form action="{% url 'sign_up_v' %}" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}
+        <br>
+        <div class="alert alert-danger">
+          {{field.errors}}
+        </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="checkbox">
+      <label><input type="checkbox" required name="remember"> Accept privacy</label>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="reset" class="btn btn-default">Reset</button>
+  </form>
+{% endblock %}
