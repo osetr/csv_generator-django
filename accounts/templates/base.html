@@ -36,12 +36,17 @@
           <li><a href="{% url 'sign_in_v' %}"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
           {% endif %}
           {% if active_page == "sign_up" %}
-          <li class="active"><a href="{% url 'sign_up_v' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li class="active"><a href="{% url 'sign_up_v' %}"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
           {% else %}
-          <li><a href="{% url 'sign_up_v' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="{% url 'sign_up_v' %}"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
           {% endif %}
           {% endif %}
           {% if user_authenticated %}
+          {% if active_page == "add_schema" %}
+          <li class="active"><a href="{% url 'add_schema_v' %}"><span class="glyphicon glyphicon-leaf"></span> New schema</a></li>
+          {% else %}
+          <li><a href="{% url 'add_schema_v' %}"><span class="glyphicon glyphicon-leaf"></span> New schema</a></li>
+          {% endif %}
           <li><a href="{% url 'logout_v' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           {% endif %}
         </ul>

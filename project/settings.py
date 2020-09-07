@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "home",
     "accounts",
+    "schemas",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -60,11 +61,9 @@ WSGI_APPLICATION = "project.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "csv_generator",
-        "USER": "root",
-        "PASSWORD": "uawesome120300",
-    }
+      'ENGINE' : 'djongo',
+      'NAME' : 'csv',
+   }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
