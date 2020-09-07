@@ -4,7 +4,107 @@
 
 {% block content %}
 
-    <h3 class="h3" id="head_banner">{% trans "Create schema" %}</h3>
-
+    <form action="{% url 'sign_in_v' %}" method="POST">
+        <div class="pull-right"><button type="submit" class="btn btn-primary">Save schema</button></div>
+        <h3 class="h3">{% trans "Create schema" %}</h3>
     
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
+        {% if errors %}
+        {% for error in errors %}
+        <div class="alert alert-danger">
+          {{ error }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </form>
+    <h3 class="h3">{% trans "Schema columns" %}</h3>
+    
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+            <th>Column name</th>
+            <th>Type</th>
+            <th>Order</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody id="columns">
+            
+        </tbody>
+    </table>
+
+    <div class="panel panel-default" style="padding: 10px;">
+        <form id="column_form">
+                <div class="form-group col-md-3" style="padding-left:0px;">
+                    <label for="name">Column name</label>
+                    <input class="form-control" type="text" id="name">
+                </div>
+                <div class="form-group col-md-3" onclick="show_range()" style="padding-left:0px;">
+                    <label for="type">Type</label>
+                    <select id="type" class="form-control">
+                        <option>Full name</option>
+                        <option>Job</option>
+                        <option>Email</option>
+                        <option>Text</option>
+                        <option>Date</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2" id="range" style="padding-left:0px; display: none;">
+                    <label for="amount">Amount of sentences</label>
+                    <input class="form-control" type="number" id="amount" value="0">
+                </div>
+                <div class="form-group col-md-1" style="padding-left:0px;">
+                    <label for="order">Order</label>
+                    <input class="form-control" type="number" id="order">
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button class="btn btn-primary" onclick="add_column()" type="button">Add column</button>
+                    </div>
+                </div>
+        </form>
+    </div>
+
+    <script>
+        column_pk = 0;
+
+        function show_range()
+        {
+            if ($( "#type" ).val() == "Text") $("#range").attr("style","padding-left:0px; display: block");
+            else $("#range").attr("style","display: none")
+        }
+
+        function add_column()
+        {
+            if ($("#name").val() && $("#order").val())
+            {
+                Text = "Text"
+                if ($( "#type" ).val() == "Text") Text += '(' + Math.abs($( "#amount" ).val()) + ')'
+                document.getElementById('columns').innerHTML+='<tr id="column' + column_pk + '"><td>' + $( "#name" ).val() + 
+                '</td><td>' + Text + '</td><td>' + $( "#order" ).val() + 
+                '</td><td><a onclick="del_column(' + column_pk + ')" style="color: red; cursor: pointer;">delete</a></td></tr>';
+                // document.getElementById('id_description').innerHTML+= 's'
+                clean_form();
+                
+                column_pk ++;
+            }
+        }
+
+        function del_column(pk)
+        {
+            $("#column" + pk).attr("style","display: none")
+        }
+
+        function clean_form()
+        {
+            document.getElementById('column_form').reset();
+        }
+
+    </script>
 {% endblock %} 

@@ -6,5 +6,5 @@ urlpatterns = [
     path("users/", include("accounts.urls")),
     path("accounts/", include("allauth.urls")),
     path("", include("home.urls")),
-    path("", include("schemas.urls")),   
+    path("", include("schemas.urls")),
 ]

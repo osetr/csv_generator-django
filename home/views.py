@@ -9,6 +9,5 @@ class HomeView(View):
         return render(
             request,
             "home.html",
-            context={"user_authenticated": user_authenticated,
-                     "active_page": "home"},
+            context={"user_authenticated": user_authenticated, "active_page": "home"},
         )

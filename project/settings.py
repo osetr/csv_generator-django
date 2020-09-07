@@ -59,12 +59,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "project.wsgi.application"
 
-DATABASES = {
-    "default": {
-      'ENGINE' : 'djongo',
-      'NAME' : 'csv',
-   }
-}
+DATABASES = {"default": {"ENGINE": "djongo", "NAME": "csv",}}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -95,4 +90,4 @@ LOGIN_REDIRECT_URL = "home_v"
 
 SITE_ID = 1
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = "none"
