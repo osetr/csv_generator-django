@@ -18,6 +18,45 @@
         <p>Nibh praesent tristique magna sit amet purus gravida. Mauris in aliquam sem fringilla. Elementum sagittis vitae et leo duis ut. Vitae et leo duis ut diam quam nulla porttitor. Facilisis volutpat est velit egestas. Fringilla ut morbi tincidunt augue interdum velit euismod. Adipiscing elit pellentesque habitant morbi tristique senectus. Posuere urna nec tincidunt praesent semper feugiat nibh sed. Pharetra pharetra massa massa ultricies mi. Egestas dui id ornare arcu odio ut sem nulla pharetra. Nunc mattis enim ut tellus elementum sagittis vitae et leo.</p>
     </div>
     {% else %}
-    <h3 class="h3" id="head_banner">{% trans "Welcome to CSVGenerator" %}, {{ user.username | title }}</h3>
+    <div class="container">
+        <h3 class="h3" id="head_banner">{% trans "Welcome to CSVGenerator" %}, {{ user.username | title }}</h3>
+        <p>Here you can find all your schemas:</p>            
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+                <th>Title</th>
+                <th>Modified</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for schema in schemas %}
+                <tr id="schema_{{ schema.id }}">
+                    <td>{{ schema.name }}</td>
+                    <td>{{ schema.date }}</td>
+                    <td>Edit schema <a onclick="delete_schema({{ schema.id }})" style="color: red; cursor: pointer;">delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+    </div>
+
+    <script type="text/javascript">
+        function delete_schema(val)
+        {
+            $.ajax({
+                    type: 'GET',
+                    async: true,
+                    url: "/ajax/delete_schema/" + val,
+                    success: function(data) {
+                        if (data['response'] == "Successfuly deleted") 
+                        {
+                            document.getElementById('schema_' + val).innerHTML="";
+                        }
+                    },
+                    dataType: 'json',
+                });
+        }
+      </script>
     {% endif %}
 {% endblock %} 

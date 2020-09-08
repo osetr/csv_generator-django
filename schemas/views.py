@@ -24,28 +24,29 @@ class AddSchemaView(LoginRequiredMixin, View):
         )
 
     def post(self, request):
-        def get_json_from_schema(name, separator, columns):
-            result = {"scheme_name": name, "separator": separator}
+        def columns_to_json(columns):
             columns = re.sub(r"<td><a.*?<\/a><\/td>", "", columns)
             columns = re.findall(r"<td.*?\/td>", columns)
             columns = list(map(lambda a: re.search(">(.*?)<", a).group(1), columns))
-            result.update(
+            result = [
                 {
-                    "columns": [
-                        {
-                            "name": columns[i * 3],
-                            "type": columns[i * 3 + 1],
-                            "order": columns[i * 3 + 2],
-                        }
-                        for i in range(int(len(columns) / 3))
-                    ]
+                    "name": columns[i * 3],
+                    "type": columns[i * 3 + 1],
+                    "order": columns[i * 3 + 2],
                 }
-            )
-            for column in result['columns']:
-                if re.findall(r"Text", column['type']):
-                    column.update({'sentences_amount': re.search("\((.*?)\)", column['type']).group(1)})
-                    column.update({'type': 'Text'})
-            result['columns'].sort(key=lambda i: int(i['order']))
+                for i in range(int(len(columns) / 3))
+            ]
+            for column in result:
+                if re.findall(r"Text", column["type"]):
+                    column.update(
+                        {
+                            "sentences_amount": re.search(
+                                "\((.*?)\)", column["type"]
+                            ).group(1)
+                        }
+                    )
+                    column.update({"type": "Text"})
+            result.sort(key=lambda i: int(i["order"]))
 
             return result
 
@@ -54,9 +55,10 @@ class AddSchemaView(LoginRequiredMixin, View):
             name = form.cleaned_data["name"]
             separator = form.cleaned_data["separator"]
             columns = form.cleaned_data["columns"]
-            columns = get_json_from_schema(name, separator, columns)
-            schema = Schema(name=name, separator=separator)
-            schema.columns = columns['columns']
+            columns = columns_to_json(columns)
+            schema = Schema(
+                name=name, separator=separator, columns=columns, author=request.user
+            )
             schema.save()
 
         return redirect("add_schema_v")
