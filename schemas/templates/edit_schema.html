@@ -1,0 +1,87 @@
+
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+    <div class="pull-right" style="margin: 10px;"><button onclick="generate_data()" class="btn btn-primary">Generate data</button></div>
+    <div class="pull-right" style="margin: 10px;"><input id="rows_number" type="number" placeholder="Number of rows:" class="form-control"></div>
+    <h3 class="h3">Data sets</h3>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Created</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="data">
+            
+        </tbody>
+    </table>
+    
+
+
+    <script type="text/javascript">
+        function generate_data()
+        {
+            
+            if ($("#rows_number").val() > 0)
+            {
+
+                $("#rows_number").attr("style","border-color: none;");
+                var today = new Date();
+                var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+                $.ajax({
+                        type: 'POST',
+                        async: true,
+                        url: "/schema/ajax/generate_data/" + "{{ pk }}/" + $("#rows_number").val(),
+                        headers: { "X-CSRFToken": '{{csrf_token}}' },
+                        success: function(data) {
+                            if (data['response'] == "Success") 
+                            {
+                                id = data['id'];
+                                document.getElementById('data').innerHTML+='<tr>' + 
+                                '<td>' + date + '</td>' + 
+                                '<td><div class="loader pull-right"></div><span style="color: rgb(115, 115, 117);">processing...</span></td>' + 
+                                '<td><a id="' + id + '" class="not_ready" style="text-decoration: none; color: grey; cursor: default;">Download</a></td></tr>'
+                                setInterval(wait_for_file_ready, 2000, id)
+                            }
+                        },
+                        dataType: 'json',
+                    });
+            }
+            else 
+            {
+                $("#rows_number").attr("style","border-color: red;");
+            }
+        }
+
+        function wait_for_file_ready(id)
+        {
+            if (!file_ready(id))
+            {
+                $.ajax({
+                        type: 'GET',
+                        async: true,
+                        url: "/schema/ajax/check_celery_job/" + id + "/",
+                        success: function(data) {
+                            if (data['response'] == "File ready") 
+                            {
+                                $("#" + id).attr("style","color: green;");
+                                $("#" + id).attr("class","ready");
+                            }
+                        },
+                        dataType: 'json',
+                    });
+            }
+        }
+
+        function file_ready(id)
+        {
+            return $('#' + id).attr('class') == "ready";
+        }
+    </script>
+{% endblock %} 

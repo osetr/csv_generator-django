@@ -3,7 +3,9 @@ from django.views.generic import View
 from .forms import NewSchemeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 import re
-from .models import Schema
+from .models import Schema, Processing
+from django.http import Http404, JsonResponse
+import uuid
 
 
 class AddSchemaView(LoginRequiredMixin, View):
@@ -62,3 +64,41 @@ class AddSchemaView(LoginRequiredMixin, View):
             schema.save()
 
         return redirect("add_schema_v")
+
+
+class EditSchemaView(LoginRequiredMixin, View):
+    login_url = "/users/sign_in/"
+
+    def get(self, request, pk):
+        user_authenticated = request.user.is_authenticated
+
+        return render(
+            request,
+            "edit_schema.html",
+            context={
+                "user_authenticated": user_authenticated,
+                "pk": pk,
+            },
+        )
+
+
+def generate_data_ajax(request, pk, rows):
+    if request.is_ajax():
+        id = uuid.uuid4()
+        Processing(id=id, schema_id=pk, rows=rows).save()
+        return JsonResponse({"response": "Success", "id": str(id)})
+    else:
+        raise Http404
+
+
+def chech_celery_job_ajax(request, pk):
+    if request.is_ajax():
+        try:
+            Processing.objects.get(pk=pk)
+        except:
+            response = "File ready"
+        else:
+            response = "File not ready"
+        return JsonResponse({"response": response})
+    else:
+        raise Http404

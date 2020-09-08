@@ -7,7 +7,11 @@ from django.http import Http404, JsonResponse
 class HomeView(View):
     def get(self, request):
         user_authenticated = request.user.is_authenticated
-        schemas = Schema.objects.filter(author=request.user).values()
+        try:
+            schemas = Schema.objects.filter(author=request.user).values()
+        except TypeError:
+            schemas = []
+            print("User not authanticated")
         return render(
             request,
             "home.html",

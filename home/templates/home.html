@@ -22,7 +22,7 @@
         <h3 class="h3" id="head_banner">{% trans "Welcome to CSVGenerator" %}, {{ user.username | title }}</h3>
         <p>Here you can find all your schemas:</p>            
         <table class="table table-bordered">
-          <thead>
+            <thead>
             <tr>
                 <th>Title</th>
                 <th>Modified</th>
@@ -34,20 +34,24 @@
                 <tr id="schema_{{ schema.id }}">
                     <td>{{ schema.name }}</td>
                     <td>{{ schema.date }}</td>
-                    <td>Edit schema <a onclick="delete_schema({{ schema.id }})" style="color: red; cursor: pointer;">delete</a></td>
+                    <td>
+                        <a href="{% url 'edit_schema_v' schema.id %}" style="color: #200092; cursor: pointer;">Edit schema</a>
+                        <a onclick="delete_schema({{ schema.id }})" style="color: red; cursor: pointer;">Delete</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
-            </table>
+        </table>
     </div>
 
     <script type="text/javascript">
         function delete_schema(val)
         {
             $.ajax({
-                    type: 'GET',
+                    type: 'DELETE',
                     async: true,
                     url: "/ajax/delete_schema/" + val,
+                    headers: { "X-CSRFToken": '{{csrf_token}}' },
                     success: function(data) {
                         if (data['response'] == "Successfuly deleted") 
                         {
@@ -57,6 +61,6 @@
                     dataType: 'json',
                 });
         }
-      </script>
+    </script>
     {% endif %}
 {% endblock %} 

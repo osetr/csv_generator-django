@@ -72,13 +72,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_L10N = False
+USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 STATIC_URL = "/static/"
 
@@ -91,3 +91,9 @@ LOGIN_REDIRECT_URL = "home_v"
 SITE_ID = 1
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
+CELERY_BROKER_URL = "redis://localhost:6379"
+
+CELERY_ACCEPT_CONTENT = ['json']
+
+CELERY_TASK_SERIALIZER = 'json'
