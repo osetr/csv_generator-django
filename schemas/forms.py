@@ -15,8 +15,8 @@ class NewSchemeForm(forms.Form):
             attrs={"class": "form-control", "placeholder": "Enter scheme name"}
         ),
     )
-    type = forms.CharField(
+    separator = forms.CharField(
         label="Column separator",
         widget=forms.Select(choices=SEPARATOR_CHOICES, attrs={"class": "form-control"}),
     )
-    description = forms.CharField(label="", widget=forms.HiddenInput())
+    columns = forms.CharField(label="", widget=forms.HiddenInput())
