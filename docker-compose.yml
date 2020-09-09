@@ -1,0 +1,33 @@
+version: "3"   
+
+services:
+        app:
+                build: .
+                container_name: app
+                restart: always
+                ports:
+                        - "8000:8000"
+                depends_on:
+                        - redis
+                        - mongodb
+                entrypoint: /bin/bash -c "python3 manage.py migrate; python3 manage.py runserver 0.0.0.0:8000 & celery worker -A project.celery -B"
+                network_mode: host
+
+        redis:
+                image: redis:alpine
+                container_name: redis
+                restart: always
+                ports:
+                        - 6379:6379
+                network_mode: host
+
+        mongodb:
+                image: mongo
+                container_name: mongodb
+                restart: always
+                environment:
+                        MONGO_INITDB_ROOT_USERNAME: root
+                        MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+                        MONGO_INITDB_DATABASE: csv
+                ports:
+                        - 27017:27017
