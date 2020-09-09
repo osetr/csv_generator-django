@@ -18,24 +18,65 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Schema',
+            name="Schema",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=64)),
-                ('separator', models.CharField(max_length=10)),
-                ('date', models.DateTimeField(default=datetime.datetime(2020, 9, 9, 11, 42, 23, 792652), editable=False)),
-                ('columns', djongo.models.fields.JSONField()),
-                ('author', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=64)),
+                ("separator", models.CharField(max_length=10)),
+                (
+                    "date",
+                    models.DateTimeField(
+                        default=datetime.datetime(2020, 9, 9, 11, 42, 23, 792652),
+                        editable=False,
+                    ),
+                ),
+                ("columns", djongo.models.fields.JSONField()),
+                (
+                    "author",
+                    models.ForeignKey(
+                        default=None,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Processing',
+            name="Processing",
             fields=[
-                ('file_id', models.UUIDField(default=uuid.UUID('c164f93f-1436-47cd-a326-7a6e2b3c93dc'), primary_key=True, serialize=False)),
-                ('date', models.DateTimeField(default=datetime.datetime(2020, 9, 9, 11, 42, 23, 793143), editable=False)),
-                ('file_ready', models.BooleanField(default=False)),
-                ('rows', models.IntegerField()),
-                ('schema', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='schemas.Schema')),
+                (
+                    "file_id",
+                    models.UUIDField(
+                        default=uuid.UUID("c164f93f-1436-47cd-a326-7a6e2b3c93dc"),
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "date",
+                    models.DateTimeField(
+                        default=datetime.datetime(2020, 9, 9, 11, 42, 23, 793143),
+                        editable=False,
+                    ),
+                ),
+                ("file_ready", models.BooleanField(default=False)),
+                ("rows", models.IntegerField()),
+                (
+                    "schema",
+                    models.ForeignKey(
+                        default=None,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="schemas.Schema",
+                    ),
+                ),
             ],
         ),
     ]

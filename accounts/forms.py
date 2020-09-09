@@ -2,10 +2,9 @@ from allauth.account.forms import (
     SignupForm,
     LoginForm,
 )
-from django import forms
-from django.urls import reverse
 
 
+# Override signup form from allauth so that it could have desirable view
 class SignUpForm(SignupForm):
     def __init__(self, *args, **kwargs):
         self.field_order = ["username", "email", "password1", "password2"]
@@ -25,6 +24,7 @@ class SignUpForm(SignupForm):
         )
 
 
+# Override login form from allauth so that it could have desirable view
 class SignInForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

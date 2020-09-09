@@ -14,7 +14,7 @@ def genPhone():
 
 
 def genText(number):
-    return "".join([fake.sentence() for _ in range(number)])
+    return "".join([fake.sentence() for _ in range(int(number))])
 
 
 def genFullName():
@@ -37,7 +37,7 @@ def genData(type, **kwargs):
     elif type == "Phone number":
         return genPhone()
     elif type == "Text":
-        return genText(kwargs["text_sentences"])
+        return genText(kwargs["sentences_amount"])
     else:
         return genDate()
 
@@ -45,51 +45,43 @@ def genData(type, **kwargs):
 @periodic_task(run_every=timedelta(seconds=1), name="generate_file")
 def build_csv_file():
     try:
+
         process = Processing.objects.filter(file_ready=False).first()
         file_id = process.file_id
         schema_id = process.schema_id
         rows = process.rows
 
-        full_schema_info = list(Schema.objects.filter(id=schema_id).values())[0]
+        schema = Schema.objects.get(id=schema_id)
+        separator = schema.separator
+        columns = schema.columns
 
-        schema_separator = full_schema_info["separator"]
-
-        schema_columns = full_schema_info["columns"]
-
-        columns_number = len(schema_columns)
-
-        columns_names = [column["name"] for column in schema_columns]
-
-        columns_types = [column["type"] for column in schema_columns]
-
+        names = [column["name"] for column in columns]
+        types = [column["type"] for column in columns]
         additional_parameters = [
-            {"text_sentences": int(column["sentences_amount"])}
-            if "sentences_amount" in column.keys()
-            else {"another_parametr": 0}
-            for column in schema_columns
+            column["additional_parameters"]
+            for column in columns
         ]
 
-        if schema_separator == "comma":
-            delimiter = ","
-        elif schema_separator == "whitespace":
-            delimiter = " "
-        else:
-            delimiter = ";"
+        delimiter = {
+            separator == "comma": ",",
+            separator == "whitespace": " ",
+            separator == "semicolon": ";",
+        }[True]
 
-        with open("media/" + str(file_id) + ".csv", "w", newline="") as csvfile:
+        with open("media/" + str(file_id) + ".csv", "w", newline="") as csvf:
 
             writer = csv.DictWriter(
-                csvfile, fieldnames=columns_names, delimiter=delimiter
+                csvf,
+                fieldnames=names,
+                delimiter=delimiter
             )
             writer.writeheader()
 
             for _ in range(rows):
                 writer.writerow(
                     {
-                        columns_names[i]: genData(
-                            columns_types[i], **additional_parameters[i]
-                        )
-                        for i in range(columns_number)
+                        names[i]: genData(types[i], **additional_parameters[i])
+                        for i in range(len(columns))
                     }
                 )
 

@@ -18,6 +18,7 @@
         <p>Nibh praesent tristique magna sit amet purus gravida. Mauris in aliquam sem fringilla. Elementum sagittis vitae et leo duis ut. Vitae et leo duis ut diam quam nulla porttitor. Facilisis volutpat est velit egestas. Fringilla ut morbi tincidunt augue interdum velit euismod. Adipiscing elit pellentesque habitant morbi tristique senectus. Posuere urna nec tincidunt praesent semper feugiat nibh sed. Pharetra pharetra massa massa ultricies mi. Egestas dui id ornare arcu odio ut sem nulla pharetra. Nunc mattis enim ut tellus elementum sagittis vitae et leo.</p>
     </div>
     {% else %}
+
     <div class="container">
         <h3 class="h3" id="head_banner">{% trans "Welcome to CSVGenerator" %}, {{ user.username | title }}</h3>
         <p>Here you can find all your schemas:</p>            
@@ -62,5 +63,6 @@
                 });
         }
     </script>
+    
     {% endif %}
 {% endblock %} 
