@@ -8,6 +8,7 @@ from django.http import Http404, JsonResponse, HttpResponse
 import uuid
 from django.views.static import serve
 import os
+from django.utils import timezone
 
 
 class AddSchemaView(LoginRequiredMixin, View):
@@ -61,7 +62,11 @@ class AddSchemaView(LoginRequiredMixin, View):
             columns = form.cleaned_data["columns"]
             columns = columns_to_json(columns)
             schema = Schema(
-                name=name, separator=separator, columns=columns, author=request.user
+                name=name, 
+                separator=separator, 
+                columns=columns, 
+                author=request.user, 
+                date=timezone.now()
             )
             schema.save()
 
@@ -89,7 +94,7 @@ class EditSchemaView(LoginRequiredMixin, View):
 def generate_data_ajax(request, pk, rows):
     if request.is_ajax():
         file_id = uuid.uuid4()
-        Processing(file_id=file_id, schema_id=pk, rows=rows).save()
+        Processing(file_id=file_id, schema_id=pk, rows=rows, date=timezone.now()).save()
         return JsonResponse({"response": "Success", "file_id": str(file_id)})
     else:
         raise Http404
