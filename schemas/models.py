@@ -15,7 +15,7 @@ class Schema(models.Model):
 
 
 class Processing(models.Model):
-    id = models.UUIDField(primary_key=True)
+    file_id = models.UUIDField(primary_key=True)
     schema = models.ForeignKey(Schema, on_delete=models.CASCADE, default=None)
     rows = models.IntegerField()
 

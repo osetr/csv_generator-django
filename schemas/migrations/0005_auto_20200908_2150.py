@@ -8,21 +8,39 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schemas', '0004_auto_20200908_1843'),
+        ("schemas", "0004_auto_20200908_1843"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='schema',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2020, 9, 8, 21, 50, 24, 663307), editable=False),
+            model_name="schema",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2020, 9, 8, 21, 50, 24, 663307),
+                editable=False,
+            ),
         ),
         migrations.CreateModel(
-            name='Processing',
+            name="Processing",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rows', models.IntegerField()),
-                ('schema', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='schemas.Schema')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("rows", models.IntegerField()),
+                (
+                    "schema",
+                    models.ForeignKey(
+                        default=None,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="schemas.Schema",
+                    ),
+                ),
             ],
         ),
     ]

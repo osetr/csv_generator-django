@@ -75,18 +75,15 @@ class EditSchemaView(LoginRequiredMixin, View):
         return render(
             request,
             "edit_schema.html",
-            context={
-                "user_authenticated": user_authenticated,
-                "pk": pk,
-            },
+            context={"user_authenticated": user_authenticated, "pk": pk,},
         )
 
 
 def generate_data_ajax(request, pk, rows):
     if request.is_ajax():
-        id = uuid.uuid4()
-        Processing(id=id, schema_id=pk, rows=rows).save()
-        return JsonResponse({"response": "Success", "id": str(id)})
+        file_id = uuid.uuid4()
+        Processing(file_id=file_id, schema_id=pk, rows=rows).save()
+        return JsonResponse({"response": "Success", "file_id": str(file_id)})
     else:
         raise Http404
 

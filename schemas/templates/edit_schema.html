@@ -42,12 +42,12 @@
                         success: function(data) {
                             if (data['response'] == "Success") 
                             {
-                                id = data['id'];
+                                file_id = data['file_id'];
                                 document.getElementById('data').innerHTML+='<tr>' + 
                                 '<td>' + date + '</td>' + 
-                                '<td><div class="loader pull-right"></div><span style="color: rgb(115, 115, 117);">processing...</span></td>' + 
-                                '<td><a id="' + id + '" class="not_ready" style="text-decoration: none; color: grey; cursor: default;">Download</a></td></tr>'
-                                setInterval(wait_for_file_ready, 2000, id)
+                                '<td id="processing_' + file_id + '"><div class="loader pull-right"></div><span style="color: rgb(115, 115, 117);">processing...</span></td>' + 
+                                '<td><a id="' + file_id + '" class="not_ready" style="text-decoration: none; color: grey; cursor: default;">Download</a></td></tr>'
+                                setInterval(wait_for_file_ready, 2000, file_id)
                             }
                         },
                         dataType: 'json',
@@ -59,19 +59,20 @@
             }
         }
 
-        function wait_for_file_ready(id)
+        function wait_for_file_ready(file_id)
         {
-            if (!file_ready(id))
+            if (!file_ready(file_id))
             {
                 $.ajax({
                         type: 'GET',
                         async: true,
-                        url: "/schema/ajax/check_celery_job/" + id + "/",
+                        url: "/schema/ajax/check_celery_job/" + file_id + "/",
                         success: function(data) {
                             if (data['response'] == "File ready") 
                             {
-                                $("#" + id).attr("style","color: green;");
-                                $("#" + id).attr("class","ready");
+                                $("#" + file_id).attr("style","text-decoration: none; color: green; cursor: pointer;");
+                                $("#" + file_id).attr("class","ready");
+                                document.getElementById('processing_' + file_id).innerHTML='<span style="color: yellow;">Ready</span>'
                             }
                         },
                         dataType: 'json',
@@ -79,9 +80,9 @@
             }
         }
 
-        function file_ready(id)
+        function file_ready(file_id)
         {
-            return $('#' + id).attr('class') == "ready";
+            return $('#' + file_id).attr('class') == "ready";
         }
     </script>
 {% endblock %} 
