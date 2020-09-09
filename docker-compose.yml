@@ -10,7 +10,7 @@ services:
                 depends_on:
                         - redis
                         - mongodb
-                entrypoint: /bin/bash -c "python3 manage.py migrate; python3 manage.py runserver 0.0.0.0:8000 & celery worker -A project.celery -B"
+                entrypoint: /bin/bash -c "python3 manage.py migrate; python3 manage.py runsslserver 0:443 & celery worker -A project.celery -B"
                 network_mode: host
 
         redis:

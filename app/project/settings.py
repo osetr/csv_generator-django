@@ -6,9 +6,9 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 SECRET_KEY = "us_)cs-w(6pjl!qwo)v21rhixejahd&#4whrk0ir0f7pv6-mxf"
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sites",
     "django.contrib.staticfiles",
+    "sslserver",
     "home",
     "accounts",
     "schemas",
