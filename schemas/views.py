@@ -6,7 +6,7 @@ import re
 from .models import Schema, Processing
 from django.http import Http404, JsonResponse, HttpResponse
 import uuid
-from django.views.static import serve 
+from django.views.static import serve
 import os
 
 
@@ -73,11 +73,16 @@ class EditSchemaView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
         user_authenticated = request.user.is_authenticated
+        saved_data_sets = Processing.objects.filter(schema_id=pk)
 
         return render(
             request,
             "edit_schema.html",
-            context={"user_authenticated": user_authenticated, "pk": pk,},
+            context={
+                "user_authenticated": user_authenticated,
+                "pk": pk,
+                "saved_data_sets": saved_data_sets,
+            },
         )
 
 
@@ -98,12 +103,12 @@ def chech_celery_job_ajax(request, pk):
             response = "File ready"
         else:
             response = "File not ready"
+        print(response)
         return JsonResponse({"response": response})
     else:
         raise Http404
 
 
 def download_file(request, file_id):
-    filepath = './media/' + str(file_id) + '.csv' 
-
-    return serve(request, os.path.basename(filepath),os.path.dirname(filepath))
+    filepath = "./media/" + str(file_id) + ".csv"
+    return serve(request, os.path.basename(filepath), os.path.dirname(filepath))

@@ -11,7 +11,7 @@ class Schema(models.Model):
     columns = models.JSONField()
 
     def __str__(self):
-        return "%s by %s" % (self.title, self.author)
+        return "%s by %s" % (self.name, self.author)
 
 
 class Processing(models.Model):

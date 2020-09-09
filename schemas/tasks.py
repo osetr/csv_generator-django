@@ -37,7 +37,7 @@ def genData(type, **kwargs):
     elif type == "Phone number":
         return genPhone()
     elif type == "Text":
-        return genText(kwargs['text_sentences'])
+        return genText(kwargs["text_sentences"])
     else:
         return genDate()
 
@@ -63,7 +63,7 @@ def build_csv_file():
         columns_types = [column["type"] for column in schema_columns]
 
         additional_parameters = [
-            {"text_sentences":int(column["sentences_amount"])}
+            {"text_sentences": int(column["sentences_amount"])}
             if "sentences_amount" in column.keys()
             else {"another_parametr": 0}
             for column in schema_columns
