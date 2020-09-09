@@ -12,4 +12,5 @@ urlpatterns = [
     path(
         r"ajax/check_celery_job/<pk>/", chech_celery_job_ajax, name="check_celery_job_v"
     ),
+    path('media/<file_id>/', download_file)
 ]

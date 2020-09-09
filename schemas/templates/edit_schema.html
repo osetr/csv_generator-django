@@ -71,6 +71,7 @@
                             if (data['response'] == "File ready") 
                             {
                                 $("#" + file_id).attr("style","text-decoration: none; color: green; cursor: pointer;");
+                                $("#" + file_id).attr("href","/schema/media/"+ file_id);
                                 $("#" + file_id).attr("class","ready");
                                 document.getElementById('processing_' + file_id).innerHTML='<span style="color: yellow;">Ready</span>'
                             }

@@ -4,8 +4,10 @@ from .forms import NewSchemeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 import re
 from .models import Schema, Processing
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse
 import uuid
+from django.views.static import serve 
+import os
 
 
 class AddSchemaView(LoginRequiredMixin, View):
@@ -99,3 +101,9 @@ def chech_celery_job_ajax(request, pk):
         return JsonResponse({"response": response})
     else:
         raise Http404
+
+
+def download_file(request, file_id):
+    filepath = './media/' + str(file_id) + '.csv' 
+
+    return serve(request, os.path.basename(filepath),os.path.dirname(filepath))
