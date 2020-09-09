@@ -98,12 +98,14 @@ def generate_data_ajax(request, pk, rows):
 def chech_celery_job_ajax(request, pk):
     if request.is_ajax():
         try:
-            Processing.objects.get(pk=pk)
+            process = Processing.objects.get(pk=pk)
         except:
-            response = "File ready"
+            response = "File don't exist"
         else:
-            response = "File not ready"
-        print(response)
+            if process.file_ready == False:
+                response = "File not ready"
+            else:
+                response = "File ready"
         return JsonResponse({"response": response})
     else:
         raise Http404

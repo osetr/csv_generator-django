@@ -45,7 +45,7 @@ def genData(type, **kwargs):
 @periodic_task(run_every=timedelta(seconds=1), name="generate_file")
 def build_csv_file():
     try:
-        process = Processing.objects.first()
+        process = Processing.objects.filter(file_ready=False).first()
         file_id = process.file_id
         schema_id = process.schema_id
         rows = process.rows
@@ -93,7 +93,8 @@ def build_csv_file():
                     }
                 )
 
-        process.delete()
+        process.file_ready = True
+        process.save()
 
     except AttributeError:
         print("There are no any work")
