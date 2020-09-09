@@ -9,6 +9,7 @@ Faker.seed(0)
 fake = Faker()
 
 
+# fake generators
 def genPhone():
     return fake.phone_number()
 
@@ -29,6 +30,10 @@ def genDate():
     return fake.date()
 
 
+# Just convinient way to storage all in one
+# **kwargs designed for additional_parameters dict in schema
+# if it's necessary you can just add new add_param in that dict
+# and handle them here(or not handle). it gonna work.
 def genData(type, **kwargs):
     if type == "Full name":
         return genFullName()
@@ -42,19 +47,26 @@ def genData(type, **kwargs):
         return genDate()
 
 
+# this periodic task creates new csv files and save them in media dir
+# to get new job it checks objects from Processing model
+# with file_ready 'false" status
 @periodic_task(run_every=timedelta(seconds=1), name="generate_file")
 def build_csv_file():
     try:
 
+        # extract all required data from Processing
         process = Processing.objects.filter(file_ready=False).first()
         file_id = process.file_id
         schema_id = process.schema_id
         rows = process.rows
 
+        # extract data from schema, we gonna create files for
         schema = Schema.objects.get(id=schema_id)
         separator = schema.separator
         columns = schema.columns
 
+        # replace all names,types,add_params in special lists
+        # so that it was convinient to work with them
         names = [column["name"] for column in columns]
         types = [column["type"] for column in columns]
         additional_parameters = [
@@ -62,12 +74,14 @@ def build_csv_file():
             for column in columns
         ]
 
+        # determine required delimeter depends on data from form in frontend
         delimiter = {
             separator == "comma": ",",
             separator == "whitespace": " ",
             separator == "semicolon": ";",
         }[True]
 
+        # create new csv file
         with open("media/" + str(file_id) + ".csv", "w", newline="") as csvf:
 
             writer = csv.DictWriter(
@@ -85,6 +99,7 @@ def build_csv_file():
                     }
                 )
 
+        # label job as well done
         process.file_ready = True
         process.save()
 
@@ -94,4 +109,4 @@ def build_csv_file():
         print("New file was just created worked")
 
 
-# celery worker -A project.celery -B
+# to run: "celery worker -A project.celery -B"

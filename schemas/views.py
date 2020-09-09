@@ -11,6 +11,8 @@ import os
 from django.utils import timezone
 
 
+# user_authenticated serves as a filter of available information on the page
+# active_page serves to distinguish active pages and non active in navbar
 class AddSchemaView(LoginRequiredMixin, View):
     login_url = "/users/sign_in/"
 
@@ -30,6 +32,8 @@ class AddSchemaView(LoginRequiredMixin, View):
 
     def post(self, request):
         def columns_to_json(columns):
+            # frontend give data in html format(just whole table data_sets)
+            # this function serves to extract useful data from it
             columns = re.sub(r"<td><a.*?<\/a><\/td>", "", columns)
             columns = re.findall(r"<td.*?\/td>", columns)
             columns = list(
@@ -45,13 +49,19 @@ class AddSchemaView(LoginRequiredMixin, View):
                 }
                 for i in range(int(len(columns) / 3))
             ]
+            
+            # if column include additional parametrs
+            # front give them as type(par1,par2,...)
+            # this piece of code separate type and params
+            # if new type will added, just update 
+            # column["additional_parameters"], giving new name for param
+            # don't forget handle with them in celery task
             for column in result:
                 if re.findall(r"Text", column["type"]):
                     column["additional_parameters"].update(
                         {
                             "sentences_amount": re.search(
-                                "(.*?)", column["type"]
-                                # "\((.*?)\)", column["type"]
+                                "\((.*?)\)", column["type"]
                             ).group(1)
                         }
                     )
@@ -78,6 +88,7 @@ class AddSchemaView(LoginRequiredMixin, View):
         return redirect("add_schema_v")
 
 
+# show all files and create new
 class EditSchemaView(LoginRequiredMixin, View):
     login_url = "/users/sign_in/"
 
@@ -96,6 +107,7 @@ class EditSchemaView(LoginRequiredMixin, View):
         )
 
 
+# create new task for celery
 def generate_data_ajax(request, pk, rows):
     if request.is_ajax():
         file_id = uuid.uuid4()
@@ -110,6 +122,7 @@ def generate_data_ajax(request, pk, rows):
         raise Http404
 
 
+# check if celery complete task
 def chech_celery_job_ajax(request, pk):
     if request.is_ajax():
         try:
@@ -127,6 +140,7 @@ def chech_celery_job_ajax(request, pk):
         raise Http404
 
 
+# download file from media dir
 def download_file(request, file_id):
     filepath = "./media/" + str(file_id) + ".csv"
     return serve(
